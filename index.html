@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.24.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+      //Bucket Configurations
+      var bucketName = "upload-me";
+      var bucketRegion = "US East (N. Virginia) us-east-1";
+      // var IdentityPoolId = IDENTITY_POOL_ID;
+
+       AWS.config.update({
+                      region: bucketRegion,
+                      // credentials: new AWS.CognitoIdentityCredentials({
+                      //     IdentityPoolId: IdentityPoolId
+                      // })
+                  });
+
+                  var s3 = new AWS.S3({
+                      apiVersion: '2006-03-01',
+                      params: {Bucket: bucketName}
+              });
+
+      </script>
+      <div>
+         <input type="file" id="fileUpload">
+      </div>
+      <div class="">
+          <input type="text" id="pw-input" name="pw" value="">
+      </div>
+      <div>
+         <button onclick="s3upload()" id="submit-button" class="submit-button" disabled>Submit</button>
+      </div>
+      <script type="text/javascript">
+        const inputHandler = () => {
+          const text = document.getElementById("pw-input").value
+          document.getElementById("submit-button").disabled = text.toLowerCase() !== "seth"
+        }
+        const source = document.getElementById('pw-input')
+        source.addEventListener('input', inputHandler);
+
+        function s3upload() {
+           var files = document.getElementById('fileUpload').files;
+           if (files)
+           {
+             var file = files[0];
+             var fileName = file.name;
+             var filePath = 'my-first-bucket-path/' + fileName;
+             var fileUrl = 'https://' + bucketRegion + '.amazonaws.com/my-first-bucket/' +  filePath;
+             s3.upload({
+                Key: filePath,
+                Body: file,
+                ACL: 'public-read'
+                }, function(err, data) {
+                if(err) {
+                  reject('error');
+                }
+                alert('Successfully Uploaded!');
+                }).on('httpUploadProgress', function (progress) {
+                var uploaded = parseInt((progress.loaded * 100) / progress.total);
+                $("progress").attr('value', uploaded);
+              });
+           }
+        };
+        </script>
+      <progress max=”100” value=”0”></progress>
+  </body>
+</html>
