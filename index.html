@@ -15,9 +15,12 @@
 
        AWS.config.update({
                       region: bucketRegion,
-                      // credentials: new AWS.CognitoIdentityCredentials({
+                      credentials: new AWS.CognitoIdentityCredentials({
+                            accessKeyId: "AKIAVJ2I2HUIAU7GFKFB",
+                            secretAccessKey: "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",
+                            sessionToken: 'session'
+                      })
                       //     IdentityPoolId: IdentityPoolId
-                      // })
                   });
 
                   var s3 = new AWS.S3({
@@ -27,11 +30,17 @@
 
       </script>
       <div>
+        Hello!  Use the tool below to upload your file.
+      </div>
+      <br>
+      <div>
          <input type="file" id="fileUpload">
       </div>
       <div class="">
+          What is your name?
           <input type="text" id="pw-input" name="pw" value="">
       </div>
+      <br>
       <div>
          <button onclick="s3upload()" id="submit-button" class="submit-button" disabled>Submit</button>
       </div>
@@ -57,7 +66,7 @@
                 ACL: 'public-read'
                 }, function(err, data) {
                 if(err) {
-                  reject('error');
+                  console.log(err)
                 }
                 alert('Successfully Uploaded!');
                 }).on('httpUploadProgress', function (progress) {
